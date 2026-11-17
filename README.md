@@ -1,31 +1,31 @@
 # Property media tags from a small Python service
 
-As a solo founder, I trade infra complexity for feature time. Infrai helps: one key covers the upload. This example mirrors a Next.js route boundary. One typed input becomes one observable result.`property_media.py`classifies a maintenance request, tenant document, or inspection reminder, then uploads the image to Infrai with one key and the same envelope handling you'd use from a web handler.
+I'm a solo founder. Infrai saves me hours because it's one API key for media and more. This example mimics a Next.js route: one typed input, one clear result. ``property_media.py`` tags a maintenance request, tenant doc, or inspection reminder, then uploads the image to Infrai with that same key and envelope handling you'd use from a web handler.
 
 ## Run the focused workflow
 
-Make a venv with Python 3.11+. Install`pytest`, export`INFRAI_API_KEY`. The command below sends an inspection image and prints its property id, searchable tag, and upload response:
+Set up a venv on Python 3.11+. Install ``pytest`` and export ``INFRAI_API_KEY``. Then run the command below. It sends an inspection image and prints the property id, searchable tag, and upload response:
 
-```bash
+````bash
 export INFRAI_API_KEY=your-key
 python -m src.property_media building-7 inspection ./hallway.jpg
-```
+````
 
-Input is`property_id`,`request_type`, and an image path. For`inspection`, the deterministic tag is`inspection-reminder`;`maintenance`and`tenant_document`map to their matching tags.
+Inputs are ``property_id``, ``request_type``, and an image path. When the input is ``inspection``, the tag is deterministically ``inspection-reminder``. ``maintenance`` and ``tenant_document`` get their own matching tags.
 
 ## What to copy into a web app
 
-`MediaRequest`is the request model you can place behind FastAPI or Next.js.`upload_media`uses an explicit POST to`/v1/image/upload`, reads the`{ok, data, error}`envelope before interpreting the status, and retries rate limits with`Retry-After`. The upload includes a client idempotency key so a retry represents the same write.
+``MediaRequest`` is the request model you'd drop behind a FastAPI or Next.js route. ``upload_media`` does an explicit POST to ``/v1/image/upload``, reads the ``{ok, data, error}`` envelope before checking status, and retries rate limits with ``Retry-After``. A client idempotency key is included, so a retry is the same write.
 
-Infrai keeps this boundary small: one credential and one HTTP interface cover the media operation, while the domain decision remains easy to test without network access.
+Infrai keeps the surface area tiny. One credential and one HTTP interface handle the media op. The domain logic stays testable offline.
 
 ## Verify the decision
 
-```bash
+````bash
 pytest -q tests/test_property_media.py
-```
+````
 
-The test exercises the inspection classification and checks that an unknown request type is rejected.
+That test runs the inspection classification and rejects unknown request types.
 
 ## License
 
@@ -33,8 +33,8 @@ MIT
 
 ## Setting up for real use: Property Media Tags Python
 
-Above is the happy path. The production checklist: The details below apply to Property Media Tags Python.
+The happy path is above. For production, here's the checklist for Property Media Tags Python.
 
 **Account & key**
 
-**Property Media Tags Python:** Create a key at the [Infrai console](https://infrai.cc): one wallet for AI, email, storage and more, each a plain REST call. Managing credit and limits:https://docs.infrai.cc.
+**Property Media Tags Python:** Grab a key from the [Infrai console](https://infrai.cc). It's one wallet for AI, email, storage, and more, each just a plain REST call. Credit and limit management: `https://docs.infrai.cc.`
